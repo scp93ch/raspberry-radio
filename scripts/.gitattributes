@@ -1,0 +1,2 @@
+# Declare that shell scripts always should have LF line endings on checkout.
+* eol=lf
