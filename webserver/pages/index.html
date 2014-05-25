@@ -1,0 +1,96 @@
+<html>
+<head>
+	<title>BBC Radio</title>
+	<link rel="stylesheet" href="css/buttons.css">
+</head>
+<body>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+
+    <ul>
+    	<li><a href="javascript:status()">Status</a>: <span id="status"></span></li>
+    	<li><a href="javascript:play('')">Stop</a></li>
+    	<li><a href="javascript:reset()">Reset</a></li>
+    	<li><a href="javascript:play('aaa')">bad station</a></li>
+    </ul>
+    <ul id="stations"></ul>
+
+    <script>
+    	var $status = $('#status');
+
+		$(document).ajaxError(function(evnt, jqXHR, ajaxSettings, thrownError) {
+			$("#error").text(thrownError);
+		});
+
+        function ajaxFail = function(jqXHR, textStatus, errorThrown) {
+                    console.log("jqXHR.status:" + jqXHR.status);
+                    console.log("textStatus: " + textStatus);
+                    console.log("errorThrown: " + errorThrown);
+                    switch (jqXHR.status) {
+                        case 0:
+                            $status.text("Network error");
+                            break;
+                        case 404:
+                            $status.text("No such station");
+                            break;
+                        case 503:
+                            $status.text("Server error");
+                            break;
+                        }}
+
+    	function reset() {
+    		$.ajax({
+    			type: "POST",
+    			url: "/reset"
+    		});
+    		$status.text("stopped");
+       	}
+
+    	function status() {
+    		$.ajax({
+    			type: "GET",
+    			url: "/playing",
+    			success: function(data) {
+    				$status.text(data.status);
+    			},
+    			dataType: "json"
+    		});
+    	}
+
+    	function play(station) {
+    		if (station != "") {
+    			$status.text("Tuning...");
+    		}
+    		$.ajax({
+    			type: "POST",
+    			url: "/playing", 
+    			data: {"station": station},
+    			success: function(data) {
+    				$status.text(data.status);
+    			},
+    			dataType: "json",
+    		})
+    			.fail(ajaxFail);
+    	}
+
+		// get all the stations and create their buttons
+    	$.ajax({
+    		type: "GET",
+    		url: "/stations",
+    		success: function(data) {
+    			$.each(data.stations, function(index, value) {
+    				var a = $("<a>", {
+    					href: "javascript:play('" + value + "')",
+    					text: value
+    				})
+    				a.appendTo("#stations");
+    				a.wrap("<li></li>")
+    			})
+    		},
+    		dataType: "json"
+    	})
+    	// initialise the status display
+    	status();
+    </script>
+</body>
+</html>

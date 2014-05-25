@@ -1,0 +1,50 @@
+#!/bin/sh
+ 
+# This code is written by Stephen C Phillips.
+# It is in the public domain, so you can do what you like with it,
+# but a link to http://scphillips.com would be nice.
+# Thank you.
+ 
+URLS=/var/local/bbc_radio/urls
+
+# get the radio URLs if they are not there
+[ ! -f $URLS ] && bbc_radio_update
+
+case "$1" in
+    "stop")
+        mpc -q clear
+    ;;
+    "status")
+        mpc | grep -vE "^volume:" | sed "s/^http:.*/Unknown station/"
+    ;;
+    "stations")
+        cat $URLS | cut -d',' -f1 | sort
+    ;;
+    "reset")
+        echo "Fetching station URLs..."
+        mpc -q clear
+        bbc_radio_update
+    ;;
+    *)
+        grep -i "$1, " $URLS > /dev/null
+        # check if we found a URL in the URLs file matching the argument
+        if [ $? -eq 0 ]; then
+            mpc -q clear
+            mpc -q add `grep -i "$1, " $URLS | cut -d',' -f2`
+            mpc -q play
+            sleep 2
+            mpc | grep "ERROR: problems decoding" > /dev/null
+            # check if we just found an error (often caused by URLs being out of date)
+            if [ $? -eq 0 ]; then
+                echo "Fetching station URLs..."
+                mpc -q clear
+                bbc_radio_update
+                mpc -q add `grep -i "$1, " $URLS | cut -d',' -f2`
+                mpc -q play
+            fi
+            mpc | grep -vE "^volume:" | sed "s/^http:.*/Unknown station/"
+        else
+            echo "No such station"
+        fi
+    ;;
+esac

@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+playlist=/var/local/bbc_radio/urls
+rm -f $playlist
+ 
+declare -A radios
+radios["BBC1"]="http://www.bbc.co.uk/radio/listen/live/r1_aaclca.pls"
+radios["BBC1x"]="http://www.bbc.co.uk/radio/listen/live/r1x_aaclca.pls"
+radios["BBC2"]="http://www.bbc.co.uk/radio/listen/live/r2_aaclca.pls"
+radios["BBC3"]="http://www.bbc.co.uk/radio/listen/live/r3_aaclca.pls"
+radios["BBC4"]="http://www.bbc.co.uk/radio/listen/live/r4_aaclca.pls"
+radios["BBC4x"]="http://www.bbc.co.uk/radio/listen/live/r4x_aaclca.pls"
+radios["BBC5l"]="http://www.bbc.co.uk/radio/listen/live/r5l_aaclca.pls"
+radios["BBC5lsx"]="http://www.bbc.co.uk/radio/listen/live/r5lsp_aaclca.pls"
+radios["BBC6"]="http://www.bbc.co.uk/radio/listen/live/r6_aaclca.pls"
+radios["BBCan"]="http://www.bbc.co.uk/radio/listen/live/ran_aaclca.pls"
+ 
+for k in "${!radios[@]}"
+do
+pls=${radios[$k]}
+curl -s $pls | grep File1 | sed "s/File1=/$k, /" >> "$playlist"
+done
