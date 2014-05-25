@@ -1,7 +1,7 @@
 <html>
 <!--
-    This code is copyright Stephen C Phillips (http://scphillips.com).
-    It is licensed using GPL v3.
+	This code is copyright Stephen C Phillips (http://scphillips.com).
+	It is licensed using GPL v3.
 -->
 <head>
 	<title>BBC Radio</title>
@@ -9,110 +9,110 @@
 </head>
 <body>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
+	<script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
 
-    <ul>
-    	<li><a href="javascript:status()">Status</a>: <span id="status"></span></li>
-    	<li><a href="javascript:play('')">Stop</a></li>
-    	<li><a href="javascript:reset()">Reset</a></li>
-    </ul>
-    <form id="stations">
-    </form>
+	<ul>
+		<li><a href="javascript:status()">Status</a>: <span id="status"></span></li>
+		<li><a href="javascript:play('')">Stop</a></li>
+		<li><a href="javascript:reset()">Reset</a></li>
+	</ul>
+	<form id="stations">
+	</form>
 
-    <script>
-    	var $status = $('#status');
+	<script>
+		var $status = $('#status');
 
 		$(document).ajaxError(function(evnt, jqXHR, ajaxSettings, thrownError) {
 			$("#error").text(thrownError);
 		});
 
-        function ajaxFail(jqXHR, textStatus, errorThrown) {
-            var data = {status: ""};
-            switch (jqXHR.status) {
-                case 0:
-                    data.status = "Network error";
-                    break;
-                case 404:
-                    data.status = "No such station";
-                    break;
-                case 503:
-                    data.status = "Server error";
-                    break;
-            }
-            update_status(data);
-        }
+		function ajaxFail(jqXHR, textStatus, errorThrown) {
+			var data = {status: ""};
+			switch (jqXHR.status) {
+				case 0:
+					data.status = "Network error";
+					break;
+				case 404:
+					data.status = "No such station";
+					break;
+				case 503:
+					data.status = "Server error";
+					break;
+			}
+			update_status(data);
+		}
 
-        function update_status(data) {
-            if (data.status == "Playing") {
-                // change status to radio station name and select the right radio button
-                $status.text(data.station);
-                $("input[value='" + data.id + "']").prop("checked", true);
-            } else {
-                // update status and unselect all radio buttons
-                $status.text(data.status);
-                $("input[name='station']").prop("checked", false);
-            }
-        }
+		function update_status(data) {
+			if (data.status == "Playing") {
+				// change status to radio station name and select the right radio button
+				$status.text(data.station);
+				$("input[value='" + data.id + "']").prop("checked", true);
+			} else {
+				// update status and unselect all radio buttons
+				$status.text(data.status);
+				$("input[name='station']").prop("checked", false);
+			}
+		}
 
-    	function reset() {
-    		$.ajax({
-    			type: "POST",
-    			url: "/reset",
-                success: update_status,
-                dataType: "json"
-    		}).fail(ajaxFail);
-       	}
+		function reset() {
+			$.ajax({
+				type: "POST",
+				url: "/reset",
+				success: update_status,
+				dataType: "json"
+			}).fail(ajaxFail);
+		}
 
-    	function status() {
-    		$.ajax({
-    			type: "GET",
-    			url: "/playing",
-    			success: update_status,
-    			dataType: "json"
-    		}).fail(ajaxFail);
-    	}
+		function status() {
+			$.ajax({
+				type: "GET",
+				url: "/playing",
+				success: update_status,
+				dataType: "json"
+			}).fail(ajaxFail);
+		}
 
-    	function play(station) {
-    		if (station != "") {
-    			$status.text("Tuning...");
-    		}
-    		$.ajax({
-    			type: "POST",
-    			url: "/playing", 
-    			data: {"station": station},
-    			success: update_status,
-    			dataType: "json",
-    		}).fail(ajaxFail);
-    	}
+		function play(station) {
+			if (station != "") {
+				$status.text("Tuning...");
+			}
+			$.ajax({
+				type: "POST",
+				url: "/playing", 
+				data: {"station": station},
+				success: update_status,
+				dataType: "json",
+			}).fail(ajaxFail);
+		}
 
 		// get all the stations and create their radio buttons
-    	$.ajax({
-    		type: "GET",
-    		url: "/stations",
-    		success: function(data) {
-    			$.each(data.stations, function(index, value) {
-    				var input = $("<input>", {
-                        type: "radio",
-                        name: "station",
-                        id: value,
-                        value: value
-    				});
-                    input.change(function() {
-                        play($("input:checked").val());
-                    })
-    				input.appendTo("#stations");
+		$.ajax({
+			type: "GET",
+			url: "/stations",
+			success: function(data) {
+				$.each(data.stations, function(index, value) {
+					var input = $("<input>", {
+						type: "radio",
+						name: "station",
+						id: value,
+						value: value
+					});
+					input.change(function() {
+						play($("input:checked").val());
+					})
+					input.appendTo("#stations");
 
-                    var label = $("<label>", {
-                        for: value,
-                        text: value
-                    });
-                    label.appendTo("#stations");
-    			})
-    		},
-    		dataType: "json"
-    	})
-    	// initialise the status display
-    	status();
-    </script>
+					var label = $("<label>", {
+						for: value,
+						text: value
+					});
+					label.appendTo("#stations");
+				})
+			},
+			dataType: "json"
+		})
+		// initialise the status display
+		status();
+	</script>
 </body>
 </html>
