@@ -15,9 +15,9 @@
     	<li><a href="javascript:status()">Status</a>: <span id="status"></span></li>
     	<li><a href="javascript:play('')">Stop</a></li>
     	<li><a href="javascript:reset()">Reset</a></li>
-    	<li><a href="javascript:play('aaa')">bad station</a></li>
     </ul>
-    <ul id="stations"></ul>
+    <form id="stations">
+    </form>
 
     <script>
     	var $status = $('#status');
@@ -26,30 +26,39 @@
 			$("#error").text(thrownError);
 		});
 
-        function ajaxFail = function(jqXHR, textStatus, errorThrown) {
-            console.log("jqXHR.status:" + jqXHR.status);
-            console.log("textStatus: " + textStatus);
-            console.log("errorThrown: " + errorThrown);
+        function ajaxFail(jqXHR, textStatus, errorThrown) {
+            var data = {status: ""};
             switch (jqXHR.status) {
                 case 0:
-                    $status.text("Network error");
+                    data.status = "Network error";
                     break;
                 case 404:
-                    $status.text("No such station");
+                    data.status = "No such station";
                     break;
                 case 503:
-                    $status.text("Server error");
+                    data.status = "Server error";
                     break;
+            }
+            update_status(data);
+        }
+
+        function update_status(data) {
+            if (data.status == "Playing") {
+                // change status to radio station name and select the right radio button
+                $status.text(data.station);
+                $("input[value='" + data.id + "']").prop("checked", true);
+            } else {
+                // update status and unselect all radio buttons
+                $status.text(data.status);
+                $("input[name='station']").prop("checked", false);
             }
         }
 
     	function reset() {
     		$.ajax({
     			type: "POST",
-    			url: "/reset"
-                success: function(data) {
-                    $status.text(data.status);
-                },
+    			url: "/reset",
+                success: update_status,
                 dataType: "json"
     		}).fail(ajaxFail);
        	}
@@ -58,9 +67,7 @@
     		$.ajax({
     			type: "GET",
     			url: "/playing",
-    			success: function(data) {
-    				$status.text(data.status);
-    			},
+    			success: update_status,
     			dataType: "json"
     		}).fail(ajaxFail);
     	}
@@ -73,25 +80,33 @@
     			type: "POST",
     			url: "/playing", 
     			data: {"station": station},
-    			success: function(data) {
-    				$status.text(data.status);
-    			},
+    			success: update_status,
     			dataType: "json",
     		}).fail(ajaxFail);
     	}
 
-		// get all the stations and create their buttons
+		// get all the stations and create their radio buttons
     	$.ajax({
     		type: "GET",
     		url: "/stations",
     		success: function(data) {
     			$.each(data.stations, function(index, value) {
-    				var a = $("<a>", {
-    					href: "javascript:play('" + value + "')",
-    					text: value
-    				})
-    				a.appendTo("#stations");
-    				a.wrap("<li></li>")
+    				var input = $("<input>", {
+                        type: "radio",
+                        name: "station",
+                        id: value,
+                        value: value
+    				});
+                    input.change(function() {
+                        play($("input:checked").val());
+                    })
+    				input.appendTo("#stations");
+
+                    var label = $("<label>", {
+                        for: value,
+                        text: value
+                    });
+                    label.appendTo("#stations");
     			})
     		},
     		dataType: "json"

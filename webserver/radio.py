@@ -63,7 +63,7 @@ def radio(cmd):
 				# Get the ID from the cache with a fall-back
 				st_id = station_id.get(station, "Unknown station")
 
-			body = json.dumps({"status": station, "id": st_id})
+			body = json.dumps({"status": "Playing", "station": station, "id": st_id})
 		else:
 			body = json.dumps({"status": "Stopped"})
 	
