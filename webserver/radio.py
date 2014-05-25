@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-# This code is written by Stephen C Phillips.
-# It is in the public domain, so you can do what you like with it,
-# but a link to http://scphillips.com would be nice.
-# Thank you.
+# This code is copyright Stephen C Phillips (http://scphillips.com).
+# It is licensed using GPL v3.
 
 import socket
 import subprocess
@@ -135,11 +133,11 @@ while True:
 	print "Request:", req  # First line only
 	if req_body: print "Request body:", req_body
 
-	if req.startswith("GET /playing "):  # TODO: change to GET /playing
+	if req.startswith("GET /playing "):
 		status, body = radio("status")
 	elif req.startswith("GET /stations "):
 		status, body = radio("stations")
-	elif req.startswith("POST /playing"):  # TODO: change to POST /playing
+	elif req.startswith("POST /playing"):
 		# Request body is e.g. "station=BBC4"
 		station = req_body.split("=")[1]
 		if station == "":

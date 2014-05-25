@@ -1,4 +1,8 @@
 <html>
+<!--
+    This code is copyright Stephen C Phillips (http://scphillips.com).
+    It is licensed using GPL v3.
+-->
 <head>
 	<title>BBC Radio</title>
 	<link rel="stylesheet" href="css/buttons.css">
@@ -23,27 +27,31 @@
 		});
 
         function ajaxFail = function(jqXHR, textStatus, errorThrown) {
-                    console.log("jqXHR.status:" + jqXHR.status);
-                    console.log("textStatus: " + textStatus);
-                    console.log("errorThrown: " + errorThrown);
-                    switch (jqXHR.status) {
-                        case 0:
-                            $status.text("Network error");
-                            break;
-                        case 404:
-                            $status.text("No such station");
-                            break;
-                        case 503:
-                            $status.text("Server error");
-                            break;
-                        }}
+            console.log("jqXHR.status:" + jqXHR.status);
+            console.log("textStatus: " + textStatus);
+            console.log("errorThrown: " + errorThrown);
+            switch (jqXHR.status) {
+                case 0:
+                    $status.text("Network error");
+                    break;
+                case 404:
+                    $status.text("No such station");
+                    break;
+                case 503:
+                    $status.text("Server error");
+                    break;
+            }
+        }
 
     	function reset() {
     		$.ajax({
     			type: "POST",
     			url: "/reset"
-    		});
-    		$status.text("stopped");
+                success: function(data) {
+                    $status.text(data.status);
+                },
+                dataType: "json"
+    		}).fail(ajaxFail);
        	}
 
     	function status() {
@@ -54,7 +62,7 @@
     				$status.text(data.status);
     			},
     			dataType: "json"
-    		});
+    		}).fail(ajaxFail);
     	}
 
     	function play(station) {
@@ -69,8 +77,7 @@
     				$status.text(data.status);
     			},
     			dataType: "json",
-    		})
-    			.fail(ajaxFail);
+    		}).fail(ajaxFail);
     	}
 
 		// get all the stations and create their buttons

@@ -1,9 +1,7 @@
 #!/bin/sh
  
-# This code is written by Stephen C Phillips.
-# It is in the public domain, so you can do what you like with it,
-# but a link to http://scphillips.com would be nice.
-# Thank you.
+# This code is copyright Stephen C Phillips (http://scphillips.com).
+# It is licensed using GPL v3.
  
 URLS=/var/local/bbc_radio/urls
 
