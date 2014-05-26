@@ -1,16 +1,26 @@
-<html>
+<!doctype html>
 <!--
 	This code is copyright Stephen C Phillips (http://scphillips.com).
 	It is licensed under GPL v3.
 -->
+<html class="no-js" lang="">
 <head>
-	<title>BBC Radio</title>
-	<link rel="stylesheet" href="css/red.css">
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>BBC Radio</title>
+		<meta name="description" content="Control page for tuning in to BBC radio stations">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="css/normalize.css">
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/red.css">
+		<!--script src="js/modernizr-2.8.0.min.js"></script-->
 </head>
 <body>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
 	<script src="js/icheck-1.0.2.min.js"></script>
+	<script src="js/main.js"></script>
+
 	<ul id="controls">
 		<li><a href="javascript:status()">Status</a>: <span id="status"></span></li>
 		<li><a href="javascript:play('')">Stop</a></li>
@@ -22,76 +32,12 @@
 	</form>
 
 	<script>
-		var $status = $('#status');
-
-		$(document).ajaxError(function(evnt, jqXHR, ajaxSettings, thrownError) {
-			$("#error").text(thrownError);
-		});
-
-		function ajaxFail(jqXHR, textStatus, errorThrown) {
-			var data = {status: ""};
-			switch (jqXHR.status) {
-				case 0:
-					data.status = "Network error";
-					break;
-				case 404:
-					data.status = "No such station";
-					break;
-				case 503:
-					data.status = "Server error";
-					break;
-			}
-			update_status(data);
-		}
-
-		function update_status(data) {
-			if (data.status == "Playing") {
-				// change status to radio station name and select the right radio button
-				$status.text(data.station);
-				$("input[value='" + data.id + "']").iCheck("check");
-			} else {
-				// update status and deselect all radio buttons
-				$status.text(data.status);
-				$("input[name='station']").iCheck("uncheck");
-			}
-		}
-
-		function reset() {
-			$.ajax({
-				type: "POST",
-				url: "/reset",
-				success: update_status,
-				dataType: "json"
-			}).fail(ajaxFail);
-		}
-
-		function status() {
-			$.ajax({
-				type: "GET",
-				url: "/playing",
-				success: update_status,
-				dataType: "json"
-			}).fail(ajaxFail);
-		}
-
-		function play(station) {
-			if (station != "") {
-				$status.text("Tuning...");
-			}
-			$.ajax({
-				type: "POST",
-				url: "/playing", 
-				data: {"station": station},
-				success: update_status,
-				dataType: "json",
-			}).fail(ajaxFail);
-		}
-
 		// once DOM loaded, get all the stations and create their radio buttons
 		$(document).ready(function() {
 			$.ajax({
 				type: "GET",
 				url: "/stations",
+				dataType: "json",
 				success: function(data) {
 					$.each(data.stations, function(index, value) {
 						var input = $("<input>", {
@@ -120,7 +66,6 @@
 					// initialise the status display
 					status();
 				},
-				dataType: "json"
 			}).fail(ajaxFail);
 		});
 	</script>

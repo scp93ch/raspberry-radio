@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 # This code is copyright Stephen C Phillips (http://scphillips.com).
-# It is licensed using GPL v3.
+# It is licensed under GPL v3.
 
 import socket
 import subprocess
