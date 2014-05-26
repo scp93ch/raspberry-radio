@@ -11,10 +11,10 @@
 		<meta name="description" content="Control page for tuning in to BBC radio stations">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="css/normalize.css">
+		<link rel="stylesheet" href="css/font-awesome.min.css">
 		<link rel="stylesheet" href="css/main.css">
 		<link rel="stylesheet" href="css/red.css">
 		<link rel="stylesheet" href="css/custom.css">
-		<!--script src="js/modernizr-2.8.0.min.js"></script-->
 </head>
 <body>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -22,15 +22,19 @@
 	<script src="js/icheck-1.0.2.min.js"></script>
 	<script src="js/main.js"></script>
 
-	<ul id="controls">
-		<li><a href="javascript:status()">Status</a>: <span id="status"></span></li>
-		<li><a href="javascript:play('')">Stop</a></li>
-		<li><a href="javascript:reset()">Reset</a></li>
-	</ul>
+	<div id="header">
+		<span><a href="javascript:status()"><i class="fa fa-refresh"></i></a> <span id="status"></span></span>
+	</div>
+
 	<form>
 		<ul id="stations">
+			<li><input type="radio" name="station" id="Stopped" value=""><label for="Stopped">Stop</label></li>
 		</ul>
 	</form>
+
+	<div id="footer">
+		<span><a href="javascript:reset()">Reset</a></span>
+	</div>
 
 	<script>
 		// once DOM loaded, get all the stations and create their radio buttons

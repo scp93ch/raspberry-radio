@@ -126,14 +126,25 @@ while True:
 	# Uncomment this to see the whole HTTP request:
 	print "Request: " + req
 
-	# If there is an \r\n\r\n in the request then take the last line as the request body for a POST
-	# TODO: sometimes this fails with list index out of range
-	if req.split("\r\n")[-2] == "":
-		req_body = req.split("\r\n")[-1]
+	# The lines in a request each end with \r\n
+	req_lines = req.split("\r\n")
 
-	req = req.split("\r\n")[0]
-	print "Request:", req  # First line only
-	if req_body: print "Request body:", req_body
+	# The first line is most important
+	req = req_lines[0]
+
+	# If it is a GET then just ignore any parameters(!)
+	if req.startswith("GET") and "?" in req:
+		req = req[:req.index("?")]
+
+	print "Request:", req
+
+	# If it is a POST then try and find (only one line of) parameters and put into req_body
+	if req.startswith("POST"):
+		# If there is an \r\n\r\n in the request then take the last line as the request body for a POST
+		# TODO: sometimes this fails with list index out of range
+		if req_lines[-2] == "":
+			req_body = req_lines[-1]
+			print "Request body:", req_body
 
 	if req.startswith("GET /playing "):
 		status, body = radio("status")

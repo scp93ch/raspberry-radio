@@ -24,7 +24,12 @@ function ajaxFail(jqXHR, textStatus, errorThrown) {
 }
 
 function update_status(data) {
-	if (data.status == "Playing") {
+	$("i.fa-refresh").removeClass("fa-spin");
+	if (data.status == "Stopped") {
+		// update status and select the "Stop" button
+		$("#status").text("Stopped");
+		$("input[id='Stopped']").iCheck("check");
+	} else if (data.status == "Playing") {
 		// change status to radio station name and select the right radio button
 		$("#status").text(data.station);
 		$("input[value='" + data.id + "']").iCheck("check");
@@ -56,6 +61,7 @@ function status() {
 function play(station) {
 	if (station != "") {
 		$("#status").text("Tuning...");
+		$("i.fa-refresh").addClass("fa-spin");
 	}
 	$.ajax({
 		type: "POST",

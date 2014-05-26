@@ -10,3 +10,5 @@ Third party licenses:
 * jQuery, v1.11.1, MIT License, http://jquery.com/
 * HTML5 Boilerplate, v4.3.0, MIT license, http://html5boilerplate.com/
 * normalize.css, v3.0.1, MIT License, http://necolas.github.io/normalize.css/
+* Font Awesome, v4.1.0, MIT License, http://fortawesome.github.io/Font-Awesome/
+* Font Awesome font, v4.1.0, SIL OFL 1.1 (http://scripts.sil.org/OFL), http://fortawesome.github.io/Font-Awesome/
