@@ -15,7 +15,8 @@ DEFAULT_PAGE = "index.html"
 CTYPE = {
 	".js": "application/javascript",
 	".html": "text/html",
-	".css": "text/css"
+	".css": "text/css",
+	".png": "image/png",
 	}
 PORT = 8080
 
@@ -126,10 +127,11 @@ while True:
 	print "Request: " + req
 
 	# If there is an \r\n\r\n in the request then take the last line as the request body for a POST
+	# TODO: sometimes this fails with list index out of range
 	if req.split("\r\n")[-2] == "":
 		req_body = req.split("\r\n")[-1]
 
-	req = req.split("\n")[0]
+	req = req.split("\r\n")[0]
 	print "Request:", req  # First line only
 	if req_body: print "Request body:", req_body
 

@@ -1,22 +1,24 @@
 <html>
 <!--
 	This code is copyright Stephen C Phillips (http://scphillips.com).
-	It is licensed using GPL v3.
+	It is licensed under GPL v3.
 -->
 <head>
 	<title>BBC Radio</title>
-	<link rel="stylesheet" href="css/buttons.css">
+	<link rel="stylesheet" href="css/red.css">
 </head>
 <body>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
-
-	<ul>
+	<script src="js/icheck-1.0.2.min.js"></script>
+	<ul id="controls">
 		<li><a href="javascript:status()">Status</a>: <span id="status"></span></li>
 		<li><a href="javascript:play('')">Stop</a></li>
 		<li><a href="javascript:reset()">Reset</a></li>
 	</ul>
-	<form id="stations">
+	<form>
+		<ul id="stations">
+		</ul>
 	</form>
 
 	<script>
@@ -46,11 +48,11 @@
 			if (data.status == "Playing") {
 				// change status to radio station name and select the right radio button
 				$status.text(data.station);
-				$("input[value='" + data.id + "']").prop("checked", true);
+				$("input[value='" + data.id + "']").iCheck("check");
 			} else {
-				// update status and unselect all radio buttons
+				// update status and deselect all radio buttons
 				$status.text(data.status);
-				$("input[name='station']").prop("checked", false);
+				$("input[name='station']").iCheck("uncheck");
 			}
 		}
 
@@ -85,34 +87,42 @@
 			}).fail(ajaxFail);
 		}
 
-		// get all the stations and create their radio buttons
-		$.ajax({
-			type: "GET",
-			url: "/stations",
-			success: function(data) {
-				$.each(data.stations, function(index, value) {
-					var input = $("<input>", {
-						type: "radio",
-						name: "station",
-						id: value,
-						value: value
-					});
-					input.change(function() {
+		// once DOM loaded, get all the stations and create their radio buttons
+		$(document).ready(function() {
+			$.ajax({
+				type: "GET",
+				url: "/stations",
+				success: function(data) {
+					$.each(data.stations, function(index, value) {
+						var input = $("<input>", {
+							type: "radio",
+							name: "station",
+							id: value,
+							value: value,
+						});
+						input.appendTo("#stations");
+
+						var label = $("<label>", {
+							for: value,
+							text: value
+						});
+						label.appendTo("#stations");
+
+						input.next().andSelf().wrapAll("<li/>");
+					})
+
+					// style with iCheck and add event handler
+					$("input").iCheck({radioClass: 'iradio_square-red'});
+					$("input").on("ifChecked", function() {
 						play($("input:checked").val());
 					})
-					input.appendTo("#stations");
 
-					var label = $("<label>", {
-						for: value,
-						text: value
-					});
-					label.appendTo("#stations");
-				})
-			},
-			dataType: "json"
-		})
-		// initialise the status display
-		status();
+					// initialise the status display
+					status();
+				},
+				dataType: "json"
+			}).fail(ajaxFail);
+		});
 	</script>
 </body>
 </html>
