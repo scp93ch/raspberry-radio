@@ -1,0 +1,12 @@
+html {
+	font-size: 1cm;
+}
+div.checked + label {
+	color: #D54E21;
+}
+ul {
+	list-style: none;
+}
+label {
+	padding-left: 0.3cm;
+}

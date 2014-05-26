@@ -13,6 +13,7 @@
 		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/main.css">
 		<link rel="stylesheet" href="css/red.css">
+		<link rel="stylesheet" href="css/custom.css">
 		<!--script src="js/modernizr-2.8.0.min.js"></script-->
 </head>
 <body>
@@ -58,7 +59,10 @@
 					})
 
 					// style with iCheck and add event handler
-					$("input").iCheck({radioClass: 'iradio_square-red'});
+					$("input").iCheck({
+						radioClass: 'iradio_square-red',
+						increaseArea: "30%"
+					});
 					$("input").on("ifChecked", function() {
 						play($("input:checked").val());
 					})
