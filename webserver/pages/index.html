@@ -12,14 +12,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" href="css/normalize.css">
 		<link rel="stylesheet" href="css/font-awesome.min.css">
-		<link rel="stylesheet" href="css/main.css">
-		<link rel="stylesheet" href="css/red.css">
+		<!--link rel="stylesheet" href="css/main.css"-->
 		<link rel="stylesheet" href="css/custom.css">
 </head>
 <body>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
-	<script src="js/icheck-1.0.2.min.js"></script>
 	<script src="js/main.js"></script>
 
 	<div id="header">
@@ -53,6 +51,7 @@
 						});
 						input.appendTo("#stations");
 
+						// add label
 						var label = $("<label>", {
 							for: value,
 							text: value
@@ -62,14 +61,10 @@
 						input.next().andSelf().wrapAll("<li/>");
 					})
 
-					// style with iCheck and add event handler
-					$("input").iCheck({
-						radioClass: 'iradio_square-red',
-						increaseArea: "20%"
-					});
-					$("input").on("ifChecked", function() {
+					// add event handler for all radio buttons
+					$("input").change(function() {
 						play($("input:checked").val());
-					})
+					});
 
 					// initialise the status display
 					status();

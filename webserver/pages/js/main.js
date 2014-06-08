@@ -28,15 +28,15 @@ function update_status(data) {
 	if (data.status == "Stopped") {
 		// update status and select the "Stop" button
 		$("#status").text("Stopped");
-		$("input[id='Stopped']").iCheck("check");
+		$("input[id='Stopped']").prop("checked", true);
 	} else if (data.status == "Playing") {
 		// change status to radio station name and select the right radio button
 		$("#status").text(data.station);
-		$("input[value='" + data.id + "']").iCheck("check");
+		$("input[value='" + data.id + "']").prop("checked", true);
 	} else {
 		// update status and deselect all radio buttons
 		$("#status").text(data.status);
-		$("input[name='station']").iCheck("uncheck");
+		$("input[name='station']").prop("checked", false);
 	}
 }
 

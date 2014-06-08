@@ -1,9 +1,6 @@
 html {
 	font-size: 1cm;
 }
-div.checked + label {
-	color: #D54E21;
-}
 ul {
 	list-style: none;
 }
