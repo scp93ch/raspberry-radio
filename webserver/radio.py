@@ -17,6 +17,7 @@ CTYPE = {
 	".html": "text/html",
 	".css": "text/css",
 	".png": "image/png",
+	".woff": "application/font-woff",
 	}
 PORT = 8080
 
@@ -78,8 +79,6 @@ def page(filename):
 	Returns a tuple of (HTTP status code, content-type, body).
 	"""
 
-	if filename.endswith(os.sep):
-		filename = filename + DEFAULT_PAGE
 	# Create complete filepath using ROOT_DIR and remove e.g. all "../"
 	if filename.startswith(os.sep):
 		filename = filename[1:]
@@ -89,10 +88,14 @@ def page(filename):
 	if not filepath.startswith(ROOT_DIR):
 		print "403: file out of bounds"
 		return ("403", "", "")  # Forbidden
+	# If it is a folder then add on e.g. "index.html"
+	if os.path.isdir(filepath):
+		filepath = os.path.join(filepath, DEFAULT_PAGE)
 	# Check the file exists
 	if not os.path.exists(filepath):
 		print "404: file does not exist"
 		return ("404", "", "")  # File Not Found
+
 	# Read the file
 	fyle = open(filepath)
 	data = fyle.read()
