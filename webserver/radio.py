@@ -153,7 +153,7 @@ while True:
 		status, body = radio("status")
 	elif req.startswith("GET /stations "):
 		status, body = radio("stations")
-	elif req.startswith("POST /playing"):
+	elif req.startswith("POST /playing "):
 		# Request body is e.g. "station=BBC4"
 		station = req_body.split("=")[1]
 		if station == "":
