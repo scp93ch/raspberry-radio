@@ -5,33 +5,40 @@
 -->
 <html class="no-js" lang="">
 <head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<title>BBC Radio</title>
-		<meta name="description" content="Control page for tuning in to BBC radio stations">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="stylesheet" href="css/normalize.css">
-		<link rel="stylesheet" href="css/font-awesome.min.css">
-		<!--link rel="stylesheet" href="css/main.css"-->
-		<link rel="stylesheet" href="css/custom.css">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>BBC Radio</title>
+	<meta name="description" content="Control page for tuning in to BBC radio stations">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="css/normalize.css">
+	<link rel="stylesheet" href="css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/custom.css">
+	<link rel="stylesheet" href="css/app.min.css">
 </head>
 <body>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script>window.jQuery || document.write('<script src="js/jquery-1.11.1.min.js"><\/script>')</script>
 	<script src="js/main.js"></script>
 
-	<div id="header">
-		<span><a href="javascript:status()"><i class="fa fa-refresh"></i></a> <span id="status"></span></span>
+	<div class="app-topbar orange">
+		<div class="app-title">BBC Radio</div>
 	</div>
 
-	<form>
-		<ul id="stations">
-			<li><input type="radio" name="station" id="Stopped" value=""><label for="Stopped">Stop</label></li>
-		</ul>
-	</form>
+	<div class="app-content">
+		<div class="app-section">
 
-	<div id="footer">
-		<span><a href="javascript:reset()">Reset</a></span>
+			<div class="app-button green"><a href="javascript:status()"><i class="fa fa-refresh"></i> <span id="status"></span></a></div>
+
+			<form>
+				<ul id="stations" class="app-list">
+					<li class="app-button"><input type="radio" name="station" id="Stopped" value=""><label for="Stopped">Stop</label></li>
+				</ul>
+			</form>
+			
+			<div class="app-button blue"><a href="javascript:reset()">Reset</a></div>
+
+		</div>
 	</div>
 
 	<script>
@@ -58,7 +65,7 @@
 						});
 						label.appendTo("#stations");
 
-						input.next().andSelf().wrapAll("<li/>");
+						input.next().andSelf().wrapAll('<li class="app-button"/>');
 					})
 
 					// add event handler for all radio buttons
