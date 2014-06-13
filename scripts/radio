@@ -24,11 +24,11 @@ case "$1" in
         bbc_radio_update
     ;;
     *)
-        grep -i "$1, " $URLS > /dev/null
+        grep -i "$1.*, " $URLS > /dev/null
         # check if we found a URL in the URLs file matching the argument
         if [ $? -eq 0 ]; then
             mpc -q clear
-            mpc -q add `grep -i "$1, " $URLS | cut -d',' -f2`
+            mpc -q add `grep -i "$1.*, " $URLS | head -1 | cut -d',' -f2`
             mpc -q play
             sleep 2
             mpc | grep "ERROR: problems decoding" > /dev/null
@@ -37,7 +37,7 @@ case "$1" in
                 echo "Fetching station URLs..."
                 mpc -q clear
                 bbc_radio_update
-                mpc -q add `grep -i "$1, " $URLS | cut -d',' -f2`
+                mpc -q add `grep -i "$1.*, " $URLS | head -1 | cut -d',' -f2`
                 mpc -q play
             fi
             mpc | grep -vE "^volume:" | sed "s/^http:.*/Unknown station/"
