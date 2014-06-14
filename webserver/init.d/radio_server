@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          radio
+# Provides:          radio_server
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
@@ -14,14 +14,14 @@ DIR=/usr/local/bin
 DAEMON=$DIR/radio_server.py
 DAEMON_USER=root
 DAEMON_NAME=radio_server
+DAEMON_OPTS=/var/local/pages
 PIDFILE=/var/run/$DAEMON_NAME.pid
-PAGES_DIR=/var/local/pages
 
 . /lib/lsb/init-functions
 
 do_start () {
     log_daemon_msg "Starting system $DAEMON_NAME daemon"
-    start-stop-daemon --start --background --pidfile $PIDFILE --make-pidfile $PIDFILE --user $DAEMON_USER --startas $DAEMON -- $PAGES_DIR
+    start-stop-daemon --start --background --pidfile $PIDFILE --make-pidfile $PIDFILE --user $DAEMON_USER --startas $DAEMON -- $DAEMON_OPTS
     log_end_msg $?
 }
 do_stop () {

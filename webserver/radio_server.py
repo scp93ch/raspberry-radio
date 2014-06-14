@@ -22,8 +22,9 @@ CTYPE = {
 	}
 PORT = 8080
 
-# Use the first argument (if provided) as the location of the web pages
-if len(sys.argv) > 1: ROOT_DIR = os.path.normpath(sys.argv[1])
+# Use the final argument (if any are provided) as the location of the web pages.
+# When run from an init script, the first argument is the PID file so we take the final one.
+if len(sys.argv) > 1: ROOT_DIR = os.path.normpath(sys.argv[-1])
 
 station_id = {}  # Store the ID of a station keyed by its name
 
