@@ -26,10 +26,10 @@ Copy the web pages into /var/local:
 $ sudo cp -r webserver/pages/ /var/local
 
 Copy the init script into /etc/init.d:
-$ sudo cp webserver/init.d/radio /etc/init.d
+$ sudo cp webserver/init.d/radio_server /etc/init.d
 
 Update start-up and shut-down links for the radio:
-$ sudo update-rc.d radio defaults
+$ sudo update-rc.d radio_server defaults
 
 Start the radio webserver process:
-$ sudo service radio start
+$ sudo service radio_server start
