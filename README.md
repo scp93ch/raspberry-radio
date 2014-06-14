@@ -1,9 +1,15 @@
 raspberry-radio
 ===============
 
-Scripts and a simple webserver for playing BBC radio stations on a Raspberry Pi.
+Scripts and a simple webserver for playing BBC radio stations on a Raspberry Pi (or other linux systems).
 
-Scripts and software are copyright Stephen C Phillips and licensed under GPL v3 unless otherwise noted.
+See [INSTALL.md](./INSTALL.md) for installation instructions.
+
+See [Stephen's blog](http://blog.scphillips.com) for articles about this.
+
+![Screenshot](./screenshot.png)
+
+Scripts and software are copyright Stephen C Phillips and licensed under [GPL v3](./LICENSE) unless otherwise noted.
 
 Third party licenses:
 * jQuery, v1.11.1, MIT License, http://jquery.com/
