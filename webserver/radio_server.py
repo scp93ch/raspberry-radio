@@ -9,6 +9,7 @@ import json
 import os
 import sys
 from datetime import datetime
+import select
 
 # Configuration 
 ROOT_DIR = "pages"
@@ -127,63 +128,75 @@ while True:
 	content_type = "application/json"  # default
 
 	print "Waiting..."
+	
+	# When a connection is made to sock then it is handed off to another socket, csock
 	csock, caddr = sock.accept()
-
 	print datetime.isoformat(datetime.now(), ' ') + " Connection from: " + `caddr`
-	req = csock.recv(1024)  # Get the request from the socket, 1kB max
-	# Uncomment this to see the whole HTTP request:
-	print "Request: " + req
-
-	# The lines in a request each end with \r\n
-	req_lines = req.split("\r\n")
-
-	# The first line is most important
-	req = req_lines[0]
-
-	# If it is a GET then just ignore any parameters(!)
-	if req.startswith("GET") and "?" in req:
-		req = req[:req.index("?")]
-
-	print "Request:", req
-
-	# If it is a POST then try and find (only one line of) parameters and put into req_body
-	if req.startswith("POST"):
-		# If there is an \r\n\r\n in the request then take the last line as the request body for a POST
-		# TODO: sometimes this fails with list index out of range
-		if req_lines[-2] == "":
-			req_body = req_lines[-1]
-			print "Request body:", req_body
-
-	if req.startswith("GET /playing "):
-		status, body = radio("status")
-	elif req.startswith("GET /stations "):
-		status, body = radio("stations")
-	elif req.startswith("POST /playing "):
-		# Request body is e.g. "station=BBC4"
-		station = req_body.split("=")[1]
-		if station == "":
-			status, body = radio("stop")
+	
+	try:
+		# select waits until the csock is ready to read (or times out after 1 second)
+		ready = select.select([csock], [], [], 1)
+		if ready[0]:
+			req = csock.recv(1024)  # Get the request from the socket, 1kB max
 		else:
-			status, body = radio(station)
-	elif req.startswith("POST /reset"):
-		status, body = radio("reset")
-	else:
-		filename = req.split(" ")[1]
-		status, content_type, body = page(filename)
+			raise Exception("Socket read timed out")
 
-	message = ""
-	if status == "200":
-		message = "HTTP/1.0 200 OK\r\n" + \
-			"Content-Type: " + content_type + "\r\n" + \
-			"\r\n" + \
-			body
-	elif status == "403":
-		message = "HTTP/1.0 403 Forbidden\r\n\r\n"
-	elif status == "404":
-		message = "HTTP/1.0 404 Not Found\r\n\r\n"
-	elif status == "503":
-		message = "HTTP/1.0 503 Service Unavailable\r\n\r\n"
-	csock.sendall(message)
-	csock.close()
+		# Uncomment this to see the whole HTTP request:
+		print "Request: " + req
+
+		# The lines in a request each end with \r\n
+		req_lines = req.split("\r\n")
+
+		# The first line is most important
+		req = req_lines[0]
+
+		# If it is a GET then just ignore any parameters(!)
+		if req.startswith("GET") and "?" in req:
+			req = req[:req.index("?")]
+
+		print "Request:", req
+
+		# If it is a POST then try and find (only one line of) parameters and put into req_body
+		if req.startswith("POST"):
+			# If there is an \r\n\r\n in the request then take the last line as the request body for a POST
+			# TODO: sometimes this fails with list index out of range
+			if req_lines[-2] == "":
+				req_body = req_lines[-1]
+				print "Request body:", req_body
+
+		if req.startswith("GET /playing "):
+			status, body = radio("status")
+		elif req.startswith("GET /stations "):
+			status, body = radio("stations")
+		elif req.startswith("POST /playing "):
+			# Request body is e.g. "station=BBC4"
+			station = req_body.split("=")[1]
+			if station == "":
+				status, body = radio("stop")
+			else:
+				status, body = radio(station)
+		elif req.startswith("POST /reset"):
+			status, body = radio("reset")
+		else:
+			filename = req.split(" ")[1]
+			status, content_type, body = page(filename)
+
+		message = ""
+		if status == "200":
+			message = "HTTP/1.0 200 OK\r\n" + \
+				"Content-Type: " + content_type + "\r\n" + \
+				"\r\n" + \
+				body
+		elif status == "403":
+			message = "HTTP/1.0 403 Forbidden\r\n\r\n"
+		elif status == "404":
+			message = "HTTP/1.0 404 Not Found\r\n\r\n"
+		elif status == "503":
+			message = "HTTP/1.0 503 Service Unavailable\r\n\r\n"
+		csock.sendall(message)
+	except Exception as e:
+		print e
+	finally:
+		csock.close()
 
 	print "--------"
