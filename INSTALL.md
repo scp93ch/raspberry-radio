@@ -3,7 +3,7 @@ Installation
 
 You can install the two commands and the web server and start the webserver running by just doing:
 ```shell
-$ sudo install.sh
+$ sudo ./install.sh
 ```
 
 However, it is not a great idea to run any old script as root so please just check the `install.sh` file and make sure you understand what it is doing first. Otherwise, the commands required are detailed below.
