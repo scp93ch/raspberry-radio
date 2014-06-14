@@ -10,6 +10,7 @@ import os
 import sys
 from datetime import datetime
 import select
+import logging
 
 # Configuration 
 ROOT_DIR = "pages"
@@ -22,6 +23,8 @@ CTYPE = {
 	".woff": "application/font-woff",
 	}
 PORT = 8080
+
+logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 
 # Use the final argument (if any are provided) as the location of the web pages.
 # When run from an init script, the first argument is the PID file so we take the final one.
@@ -42,7 +45,7 @@ def radio(cmd):
 
 	proc = subprocess.Popen(['radio', cmd], stdout=subprocess.PIPE)
 	output = proc.communicate()[0]
-	print output
+	logging.debug(output)
 
 	if cmd == "stations":
 		body = json.dumps({"stations": output.rstrip().split("\n")})
@@ -75,7 +78,7 @@ def radio(cmd):
 		else:
 			body = json.dumps({"status": "Stopped"})
 	
-	print status + ": " + body
+	logging.info(status + ": " + body)
 	return (status, body)
 
 
@@ -92,14 +95,14 @@ def page(filename):
 	filepath = os.path.normpath(filepath)
 	# Check that the filepath is within ROOT_DIR
 	if not filepath.startswith(ROOT_DIR):
-		print "403: file out of bounds"
+		logging.info("403: file out of bounds")
 		return ("403", "", "")  # Forbidden
 	# If it is a folder then add on e.g. "index.html"
 	if os.path.isdir(filepath):
 		filepath = os.path.join(filepath, DEFAULT_PAGE)
 	# Check the file exists
 	if not os.path.exists(filepath):
-		print "404: file does not exist"
+		logging.info("404: file does not exist")
 		return ("404", "", "")  # File Not Found
 
 	# Read the file
@@ -110,7 +113,7 @@ def page(filename):
 	extension = os.path.splitext(filepath)[1]
 	ctype = CTYPE.get(extension, "text/html")
 	# Return it with status and content type
-	print "200: '" + filepath + "' " + ctype
+	logging.info("200: '" + filepath + "' " + ctype)
 	return ("200", ctype, data)
 
 
@@ -127,11 +130,11 @@ while True:
 	body = ""
 	content_type = "application/json"  # default
 
-	print "Waiting..."
+	logging.debug("Waiting...")
 	
 	# When a connection is made to sock then it is handed off to another socket, csock
 	csock, caddr = sock.accept()
-	print datetime.isoformat(datetime.now(), ' ') + " Connection from: " + `caddr`
+	logging.info(datetime.isoformat(datetime.now(), ' ') + " Connection from: " + `caddr`)
 	
 	try:
 		# select waits until the csock is ready to read (or times out after 1 second)
@@ -142,7 +145,7 @@ while True:
 			raise Exception("Socket read timed out")
 
 		# Uncomment this to see the whole HTTP request:
-		print "Request: " + req
+		#print "Request: " + req
 
 		# The lines in a request each end with \r\n
 		req_lines = req.split("\r\n")
@@ -154,7 +157,7 @@ while True:
 		if req.startswith("GET") and "?" in req:
 			req = req[:req.index("?")]
 
-		print "Request:", req
+		logging.info("Request: " + req)
 
 		# If it is a POST then try and find (only one line of) parameters and put into req_body
 		if req.startswith("POST"):
@@ -162,8 +165,9 @@ while True:
 			# TODO: sometimes this fails with list index out of range
 			if req_lines[-2] == "":
 				req_body = req_lines[-1]
-				print "Request body:", req_body
+				logging.info("Request body: " + req_body)
 
+		# Perform different actions depending on the HTTP request
 		if req.startswith("GET /playing "):
 			status, body = radio("status")
 		elif req.startswith("GET /stations "):
@@ -178,6 +182,7 @@ while True:
 		elif req.startswith("POST /reset"):
 			status, body = radio("reset")
 		else:
+			# Default to assuming it was a GET for a page
 			filename = req.split(" ")[1]
 			status, content_type, body = page(filename)
 
@@ -195,8 +200,6 @@ while True:
 			message = "HTTP/1.0 503 Service Unavailable\r\n\r\n"
 		csock.sendall(message)
 	except Exception as e:
-		print e
+		logging.warning(e)
 	finally:
 		csock.close()
-
-	print "--------"
