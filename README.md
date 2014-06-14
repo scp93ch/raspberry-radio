@@ -12,7 +12,7 @@ See [Stephen's blog](http://blog.scphillips.com) for articles about this.
 Scripts and software are copyright Stephen C Phillips and licensed under [GPL v3](./LICENSE) unless otherwise noted.
 
 Third party licenses:
-* jQuery, v1.11.1, MIT License, http://jquery.com/
-* Font Awesome, v4.1.0, MIT License, http://fortawesome.github.io/Font-Awesome/
-* Font Awesome font, v4.1.0, SIL OFL 1.1 (http://scripts.sil.org/OFL), http://fortawesome.github.io/Font-Awesome/
-* App.js, v2.0.2, MIT License, http://code.kik.com/app/2/index.html
+* [jQuery](http://jquery.com/), v1.11.1, MIT License
+* [Font Awesome](http://fortawesome.github.io/Font-Awesome/), v4.1.0, MIT License
+* [Font Awesome font](http://fortawesome.github.io/Font-Awesome/), v4.1.0, [SIL OFL 1.1](http://scripts.sil.org/OFL)
+* [App.js](http://code.kik.com/app/2/index.html), v2.0.2, MIT License
