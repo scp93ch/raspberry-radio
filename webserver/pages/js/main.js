@@ -27,20 +27,27 @@ function update_status(data) {
 	$("i.fa-refresh").removeClass("fa-spin");
 	if (data.status == "Stopped") {
 		// update status and select the "Stop" button
+		$("#statusbut").addClass("green");
+		$("#statusbut").removeClass("red");
 		$("#status").text("Stopped");
 		$("input[id='Stopped']").prop("checked", true);
 	} else if (data.status == "Playing") {
 		// change status to radio station name and select the right radio button
+		$("#statusbut").addClass("green");
+		$("#statusbut").removeClass("red");
 		$("#status").text(data.station);
 		$("input[value='" + data.id + "']").prop("checked", true);
 	} else {
 		// update status and deselect all radio buttons
+		$("#statusbut").addClass("red");
+		$("#statusbut").removeClass("green");
 		$("#status").text(data.status);
 		$("input[name='station']").prop("checked", false);
 	}
 }
 
 function reset() {
+	$("i.fa-refresh").addClass("fa-spin");
 	$.ajax({
 		type: "POST",
 		url: "/reset",
@@ -50,6 +57,7 @@ function reset() {
 }
 
 function status() {
+	$("i.fa-refresh").addClass("fa-spin");
 	$.ajax({
 		type: "GET",
 		url: "/playing",
