@@ -1,6 +1,13 @@
 Installation
 ============
 
+You can install the two commands and the web server and start the webserver running by just doing:
+```shell
+$ sudo install.sh
+```
+
+However, it is not a great idea to run any old script as root so please just check the `install.sh` file and make sure you understand what it is doing first. Otherwise, the commands required are detailed below.
+
 Radio Command
 -------------
 
@@ -61,4 +68,4 @@ Start the radio webserver process:
 $ sudo service radio_server start
 ```
 
-The web page is then available on port 8080, so visit http://your-raspberry-pi-hostname-or-IP-address:8080
+The web page is then available on port 8080, so visit [http://localhost:8080](http://localhost:8080) from the computer running the server or http://your-hostname-or-IP-address:8080 from your smartphone.
