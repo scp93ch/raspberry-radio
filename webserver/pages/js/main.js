@@ -25,18 +25,19 @@ function ajaxFail(jqXHR, textStatus, errorThrown) {
 
 function update_status(data) {
 	$("i.fa-refresh").removeClass("fa-spin");
-	if (data.status == "Stopped") {
-		// update status and select the "Stop" button
+	if (data.status == "Stopped" || data.status == "Playing") {
 		$("#statusbut").addClass("green");
 		$("#statusbut").removeClass("red");
-		$("#status").text("Stopped");
-		$("input[id='Stopped']").prop("checked", true);
-	} else if (data.status == "Playing") {
-		// change status to radio station name and select the right radio button
-		$("#statusbut").addClass("green");
-		$("#statusbut").removeClass("red");
-		$("#status").text(data.station);
-		$("input[value='" + data.id + "']").prop("checked", true);
+		
+		if (data.status == "Stopped") {
+			// update status and select the "Stop" button
+			$("#status").text("Stopped");
+			$("input[id='Stopped']").prop("checked", true);
+		} else if (data.status == "Playing") {
+			// change status to radio station name and select the right radio button
+			$("#status").text(data.station);
+			$("input[value='" + data.id + "']").prop("checked", true);
+		}
 	} else {
 		// update status and deselect all radio buttons
 		$("#statusbut").addClass("red");
