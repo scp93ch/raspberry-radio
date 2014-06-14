@@ -7,6 +7,7 @@ import socket
 import subprocess
 import json
 import os
+import sys
 from datetime import datetime
 
 # Configuration 
@@ -20,6 +21,9 @@ CTYPE = {
 	".woff": "application/font-woff",
 	}
 PORT = 8080
+
+# Use the first argument (if provided) as the location of the web pages
+if len(sys.argv) > 1: ROOT_DIR = os.path.normpath(sys.argv[1])
 
 station_id = {}  # Store the ID of a station keyed by its name
 
