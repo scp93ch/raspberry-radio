@@ -11,14 +11,29 @@ import sys
 import select
 import logging
 import logging.handlers
+import argparse
 
 # Configuration 
-PORT = 8080
-LOG_FILENAME = "/tmp/radio_server.log"
-LOG_LEVEL = logging.INFO
-ROOT_DIR = "pages"
 DEFAULT_PAGE = "index.html"
+LOG_FILENAME = "/var/log/radio_server.log"
+LOG_LEVEL = logging.INFO
 
+# Defaults
+PORT = 8080
+ROOT_DIR = "."
+
+# Parse command line arguments
+parser = argparse.ArgumentParser(description="Simple web server to control BBC radio")
+parser.add_argument("-p", "--port", help="port to listen on (default " + str(PORT) + ")", type=int)
+parser.add_argument("-d", "--directory", help="directory to serve files from (default '" + ROOT_DIR + "')")
+
+args = parser.parse_args()
+if args.directory:
+	ROOT_DIR = os.path.normpath(args.directory)
+if args.port:
+	PORT = args.port
+
+# Define MIME types for some common filename endings
 CTYPE = {
 	".js": "application/javascript",
 	".html": "text/html",
@@ -35,9 +50,6 @@ formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-# Use the final argument (if any are provided) as the location of the web pages.
-if len(sys.argv) > 1: ROOT_DIR = os.path.normpath(sys.argv[-1])
-
 station_id = {}  # Store the ID of a station keyed by its name
 
 def radio(cmd):
@@ -51,6 +63,7 @@ def radio(cmd):
 	body = ""
 	status = "200"
 
+	logger.info("Executing: radio " + cmd)
 	proc = subprocess.Popen(['radio', cmd], stdout=subprocess.PIPE)
 	output = proc.communicate()[0]
 	logger.debug(output)
