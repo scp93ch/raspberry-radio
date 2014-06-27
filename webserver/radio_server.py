@@ -8,13 +8,17 @@ import subprocess
 import json
 import os
 import sys
-from datetime import datetime
 import select
 import logging
+import logging.handlers
 
 # Configuration 
+PORT = 8080
+LOG_FILENAME = "/tmp/radio_server.log"
+LOG_LEVEL = logging.INFO
 ROOT_DIR = "pages"
 DEFAULT_PAGE = "index.html"
+
 CTYPE = {
 	".js": "application/javascript",
 	".html": "text/html",
@@ -22,12 +26,16 @@ CTYPE = {
 	".png": "image/png",
 	".woff": "application/font-woff",
 	}
-PORT = 8080
 
-logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
+# Configure logging to log to a file, making a new file at midnight and keeping the last 3 day's data
+logger = logging.getLogger(__name__)
+logger.setLevel(LOG_LEVEL)
+handler = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight", backupCount=3)
+formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 # Use the final argument (if any are provided) as the location of the web pages.
-# When run from an init script, the first argument is the PID file so we take the final one.
 if len(sys.argv) > 1: ROOT_DIR = os.path.normpath(sys.argv[-1])
 
 station_id = {}  # Store the ID of a station keyed by its name
@@ -45,7 +53,7 @@ def radio(cmd):
 
 	proc = subprocess.Popen(['radio', cmd], stdout=subprocess.PIPE)
 	output = proc.communicate()[0]
-	logging.debug(output)
+	logger.debug(output)
 
 	if cmd == "stations":
 		body = json.dumps({"stations": output.rstrip().split("\n")})
@@ -78,7 +86,7 @@ def radio(cmd):
 		else:
 			body = json.dumps({"status": "Stopped"})
 	
-	logging.info(status + ": " + body)
+	logger.info(status + ": " + body)
 	return (status, body)
 
 
@@ -95,14 +103,14 @@ def page(filename):
 	filepath = os.path.normpath(filepath)
 	# Check that the filepath is within ROOT_DIR
 	if not filepath.startswith(ROOT_DIR):
-		logging.info("403: file out of bounds")
+		logger.info("403: file out of bounds")
 		return ("403", "", "")  # Forbidden
 	# If it is a folder then add on e.g. "index.html"
 	if os.path.isdir(filepath):
 		filepath = os.path.join(filepath, DEFAULT_PAGE)
 	# Check the file exists
 	if not os.path.exists(filepath):
-		logging.info("404: file does not exist")
+		logger.info("404: file does not exist")
 		return ("404", "", "")  # File Not Found
 
 	# Read the file
@@ -113,7 +121,7 @@ def page(filename):
 	extension = os.path.splitext(filepath)[1]
 	ctype = CTYPE.get(extension, "text/html")
 	# Return it with status and content type
-	logging.info("200: '" + filepath + "' " + ctype)
+	logger.info("200: '" + filepath + "' " + ctype)
 	return ("200", ctype, data)
 
 
@@ -130,11 +138,11 @@ while True:
 	body = ""
 	content_type = "application/json"  # default
 
-	logging.debug("Waiting...")
+	logger.debug("Waiting...")
 	
 	# When a connection is made to sock then it is handed off to another socket, csock
 	csock, caddr = sock.accept()
-	logging.info(datetime.isoformat(datetime.now(), ' ') + " Connection from: " + `caddr`)
+	logger.info("Connection from: " + `caddr`)
 	
 	try:
 		# select waits until the csock is ready to read (or times out after 1 second)
@@ -157,7 +165,7 @@ while True:
 		if req.startswith("GET") and "?" in req:
 			req = req[:req.index("?")]
 
-		logging.info("Request: " + req)
+		logger.info("Request: " + req)
 
 		# If it is a POST then try and find (only one line of) parameters and put into req_body
 		if req.startswith("POST"):
@@ -165,7 +173,7 @@ while True:
 			# TODO: sometimes this fails with list index out of range
 			if req_lines[-2] == "":
 				req_body = req_lines[-1]
-				logging.info("Request body: " + req_body)
+				logger.info("Request body: " + req_body)
 
 		# Perform different actions depending on the HTTP request
 		if req.startswith("GET /playing "):
@@ -200,6 +208,6 @@ while True:
 			message = "HTTP/1.0 503 Service Unavailable\r\n\r\n"
 		csock.sendall(message)
 	except Exception as e:
-		logging.warning(e)
+		logger.warning(e)
 	finally:
 		csock.close()
