@@ -15,23 +15,26 @@ import argparse
 
 # Configuration 
 DEFAULT_PAGE = "index.html"
-LOG_FILENAME = "/var/log/radio_server.log"
 LOG_LEVEL = logging.INFO
 
 # Defaults
 PORT = 8080
 ROOT_DIR = "."
+LOG_FILENAME = "/tmp/radio_server.log"
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="Simple web server to control BBC radio")
 parser.add_argument("-p", "--port", help="port to listen on (default " + str(PORT) + ")", type=int)
 parser.add_argument("-d", "--directory", help="directory to serve files from (default '" + ROOT_DIR + "')")
+parser.add_argument("-l", "--log", help="file to write log to (default '" + LOG_FILENAME + "')")
 
 args = parser.parse_args()
 if args.directory:
 	ROOT_DIR = os.path.normpath(args.directory)
 if args.port:
 	PORT = args.port
+if args.log:
+	LOG_FILENAME = args.log
 
 # Define MIME types for some common filename endings
 CTYPE = {

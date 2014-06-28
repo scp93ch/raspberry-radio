@@ -14,7 +14,7 @@ DIR=/usr/local/bin
 DAEMON=$DIR/radio_server.py
 DAEMON_USER=root
 DAEMON_NAME=radio_server
-DAEMON_OPTS=/var/local/pages
+DAEMON_OPTS="--directory /var/local/pages --port 80 --log /var/log/radio_server.log"
 PIDFILE=/var/run/$DAEMON_NAME.pid
 
 . /lib/lsb/init-functions
