@@ -22,7 +22,7 @@ PORT = 8080
 ROOT_DIR = "."
 LOG_FILENAME = "/tmp/radio_server.log"
 
-# Parse command line arguments
+# Define and parse command line arguments
 parser = argparse.ArgumentParser(description="Simple web server to control BBC radio")
 parser.add_argument("-p", "--port", help="port to listen on (default " + str(PORT) + ")", type=int)
 parser.add_argument("-d", "--directory", help="directory to serve files from (default '" + ROOT_DIR + "')")
@@ -30,11 +30,14 @@ parser.add_argument("-l", "--log", help="file to write log to (default '" + LOG_
 
 args = parser.parse_args()
 if args.directory:
-	ROOT_DIR = os.path.normpath(args.directory)
+	ROOT_DIR = args.directory
 if args.port:
 	PORT = args.port
 if args.log:
 	LOG_FILENAME = args.log
+
+# Make sure that the ROOT_PATH is an absolute path, i.e. starting with "/"
+ROOT_DIR = os.path.abspath(ROOT_DIR)
 
 # Define MIME types for some common filename endings
 CTYPE = {
@@ -52,6 +55,11 @@ handler = logging.handlers.TimedRotatingFileHandler(LOG_FILENAME, when="midnight
 formatter = logging.Formatter('%(asctime)s %(levelname)-8s %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+
+# Log start-up info
+print "Logging to " + LOG_FILENAME
+logger.info("ROOT_DIR: " + ROOT_DIR)
+logger.info("PORT: " + str(PORT))
 
 station_id = {}  # Store the ID of a station keyed by its name
 
