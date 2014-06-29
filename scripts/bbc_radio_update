@@ -20,6 +20,6 @@ radios["BBCan"]="http://www.bbc.co.uk/radio/listen/live/ran_aaclca.pls"
  
 for k in "${!radios[@]}"
 do
-pls=${radios[$k]}
-curl -s $pls | grep File1 | sed "s/File1=/$k, /" >> "$playlist"
+	pls=${radios[$k]}
+	curl -s $pls | grep File1 | sed "s/File1=/$k, /" >> "$playlist"
 done

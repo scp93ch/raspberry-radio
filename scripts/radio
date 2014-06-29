@@ -13,33 +13,47 @@ case "$1" in
         mpc -q clear
     ;;
     "status")
+        # Run the "mpc" command, remove any line starting "volume"
+        # and replace any line starting with "http" with "Unknown station"
         mpc | grep -vE "^volume:" | sed "s/^http:.*/Unknown station/"
     ;;
     "stations")
+        # Take the URLS file, split each line at the comma
+        # and just print the first field, then sort them
         cat $URLS | cut -d',' -f1 | sort
     ;;
     "reset")
+        # Stop whaever is playing and then update the URL list
         echo "Fetching station URLs..."
         mpc -q clear
         bbc_radio_update
     ;;
     *)
+        # Search the URLS file for this script's argument ($1) followed
+        # by anything and then a comma. Redirect it to /dev/null so the result
+        # isn't shown in the console.
         grep -i "$1.*, " $URLS > /dev/null
-        # check if we found a URL in the URLs file matching the argument
+        # Check if we found a URL in the URLs file matching the argument.
         if [ $? -eq 0 ]; then
             mpc -q clear
+            # Again, search for the argument, take just the first line that matches
+            # (using "head"), split the line at the comma and take the second field.
+            # Add this to the playlist with "mpc add".
             mpc -q add `grep -i "$1.*, " $URLS | head -1 | cut -d',' -f2`
             mpc -q play
             sleep 2
+            # Check if we just found an error (often caused by URLs being out of date).
             mpc | grep "ERROR: problems decoding" > /dev/null
-            # check if we just found an error (often caused by URLs being out of date)
             if [ $? -eq 0 ]; then
+                # If mpc reported an error then fetch the URLS and try again.
                 echo "Fetching station URLs..."
                 mpc -q clear
                 bbc_radio_update
                 mpc -q add `grep -i "$1.*, " $URLS | head -1 | cut -d',' -f2`
                 mpc -q play
             fi
+            # Get the status, remove the volume line, replace any URL with
+            # "unknown station" and this time let it appear on the console.
             mpc | grep -vE "^volume:" | sed "s/^http:.*/Unknown station/"
         else
             echo "No such station"
