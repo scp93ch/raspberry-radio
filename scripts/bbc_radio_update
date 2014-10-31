@@ -7,16 +7,17 @@ playlist=/var/local/bbc_radio/urls
 rm -f $playlist
  
 declare -A radios
-radios["BBC1"]="http://www.bbc.co.uk/radio/listen/live/r1_aaclca.pls"
-radios["BBC1x"]="http://www.bbc.co.uk/radio/listen/live/r1x_aaclca.pls"
-radios["BBC2"]="http://www.bbc.co.uk/radio/listen/live/r2_aaclca.pls"
-radios["BBC3"]="http://www.bbc.co.uk/radio/listen/live/r3_aaclca.pls"
-radios["BBC4"]="http://www.bbc.co.uk/radio/listen/live/r4_aaclca.pls"
-radios["BBC4x"]="http://www.bbc.co.uk/radio/listen/live/r4x_aaclca.pls"
-radios["BBC5l"]="http://www.bbc.co.uk/radio/listen/live/r5l_aaclca.pls"
-radios["BBC5lsx"]="http://www.bbc.co.uk/radio/listen/live/r5lsp_aaclca.pls"
-radios["BBC6"]="http://www.bbc.co.uk/radio/listen/live/r6_aaclca.pls"
-radios["BBCan"]="http://www.bbc.co.uk/radio/listen/live/ran_aaclca.pls"
+
+radios["BBC1"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_one/format/pls.pls"
+radios["BBC1x"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_1xtra/format/pls.pls"
+radios["BBC2"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_two/format/pls.pls"
+radios["BBC3"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_three/format/pls.pls"
+radios["BBC4"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_fourfm/format/pls.pls"
+radios["BBC4x"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_four_extra/format/pls.pls"
+radios["BBC5l"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_five_live/format/pls.pls"
+radios["BBC5lx"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_five_live_sports_extra/format/pls.pls"
+radios["BBC6"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_6music/format/pls.pls"
+radios["BBCan"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_asian_network/supplier/ll_icy2/format/pls.pls"
  
 for k in "${!radios[@]}"
 do
