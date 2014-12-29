@@ -152,8 +152,17 @@ def page(filename):
 # Standard socket stuff
 host = ''
 port = PORT
+# Create a standard socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-sock.bind((host, port))
+try:
+	# Try binding the socket to the chosen port number.
+	# Sometimes this doesn't work because another process is already using it so we 
+	# catch all exceptions, log them and exit with a non-zero error code.
+	sock.bind((host, port))
+except Exception as e:
+	logger.error(e)
+	sys.exit(1)
+# Now we have bound to the port, listen on the port.
 sock.listen(1)  # don't queue up any requests
 
 # Loop forever, listening for requests:
@@ -164,6 +173,7 @@ while True:
 
 	logger.debug("Waiting...")
 	
+	# The program waits here for a connection to be made to the server's socket
 	# When a connection is made to sock then it is handed off to another socket, csock
 	csock, caddr = sock.accept()
 	logger.info("Connection from: " + `caddr`)
@@ -185,7 +195,7 @@ while True:
 		# The first line is most important
 		req = req_lines[0]
 
-		# If it is a GET then just ignore any parameters(!)
+		# If it is a GET then we just ignore any parameters(!)
 		if req.startswith("GET") and "?" in req:
 			req = req[:req.index("?")]
 
