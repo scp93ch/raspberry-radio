@@ -5,7 +5,8 @@ Scripts and a simple webserver for playing BBC radio stations on a Raspberry Pi 
 
 See [INSTALL.md](./INSTALL.md) for installation instructions.
 
-See [Stephen's blog](http://blog.scphillips.com) for articles about this.
+See [Stephen's blog](http://blog.scphillips.com) for articles about this, in particular, 
+[BBC Radio on the Raspberry Pi controlled with a tiny web server](http://blog.scphillips.com/2014/12/bbc-radio-on-the-raspberry-pi-controlled-with-a-tiny-web-server/).
 
 ![Screenshot](./screenshot.png)
 
