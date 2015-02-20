@@ -8,16 +8,15 @@ rm -f $playlist
  
 declare -A radios
 
-radios["BBC1"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_one/format/pls.pls"
-radios["BBC1x"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_1xtra/format/pls.pls"
-radios["BBC2"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_two/format/pls.pls"
-radios["BBC3"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_three/format/pls.pls"
-radios["BBC4"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_fourfm/format/pls.pls"
-radios["BBC4x"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_four_extra/format/pls.pls"
-radios["BBC5l"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_five_live/format/pls.pls"
-radios["BBC5lx"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_radio_five_live_sports_extra/format/pls.pls"
-radios["BBC6"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_6music/format/pls.pls"
-radios["BBCan"]="http://open.live.bbc.co.uk/mediaselector/5/select/mediaset/http-icy-aac-lc-a/vpid/bbc_asian_network/supplier/ll_icy2/format/pls.pls"
+radios["BBC1"]="http://www.radiofeeds.co.uk/bbcradio1.pls"
+radios["BBC1x"]="http://www.radiofeeds.co.uk/bbc1xtra.pls"
+radios["BBC2"]="http://www.radiofeeds.co.uk/bbcradio2.pls"
+radios["BBC3"]="http://www.radiofeeds.co.uk/bbcradio3.pls"
+radios["BBC4"]="http://www.radiofeeds.co.uk/bbcradio4fm.pls"
+radios["BBC4x"]="http://www.radiofeeds.co.uk/bbcradio4extra.pls"
+radios["BBC5l"]="http://www.radiofeeds.co.uk/bbc5live.pls"
+radios["BBC5lx"]="http://www.radiofeeds.co.uk/bbc5livesportsextra.pls"
+radios["BBC6"]="http://www.radiofeeds.co.uk/bbc6music.pls"
  
 for k in "${!radios[@]}"
 do
